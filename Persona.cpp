@@ -2,7 +2,7 @@
 
 #include <iostream>
 using namespace std;
-
+#include "string.h"
 Persona::Persona()
 {
 	this->dni = NULL;

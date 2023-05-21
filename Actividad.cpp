@@ -2,7 +2,7 @@
 
 #include <iostream>
 using namespace std;
-
+#include "string.h"
 Actividad::Actividad()
 {
 	this->nombre = NULL;

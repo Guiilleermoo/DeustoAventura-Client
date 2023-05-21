@@ -4,7 +4,7 @@
 
 #include <iostream>
 using namespace std;
-
+#include "string.h"
 Empleado::Empleado() :Persona()
 {
 	this->estatus = NULL;
