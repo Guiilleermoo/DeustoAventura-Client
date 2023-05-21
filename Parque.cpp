@@ -10,18 +10,18 @@ Parque::Parque()
 	this->horaFin = 0;
 	this->capacidad = 0;
 	this->ciudad = new Ciudad();
-	this->encargado = new Empleado();
+	this->cod_empleado = 0;
 	this->actividades = NULL;
 }
 
-Parque::Parque(char* nombre, int horaInicio, int horaFin, int capacidad, Ciudad* ciudad, Empleado* encargado, Actividad* actividades)
+Parque::Parque(char* nombre, int horaInicio, int horaFin, int capacidad, Ciudad* ciudad, int cod_empleado, Actividad* actividades)
 {
 	this->nombre = nombre;
 	this->horaInicio = horaInicio;
 	this->horaFin = horaFin;
 	this->capacidad = capacidad;
 	this->ciudad = ciudad;
-	this->encargado = encargado;
+	this->cod_empleado = cod_empleado;
 	this->actividades = actividades;
 }
 
@@ -32,7 +32,7 @@ Parque::Parque(const Parque &p)
 	this->horaFin = p.horaFin;
 	this->capacidad = p.capacidad;
 	this->ciudad = p.ciudad;
-	this->encargado = p.encargado;
+	this->cod_empleado = p.cod_empleado;
 	this->actividades = p.actividades;
 }
 
@@ -40,5 +40,4 @@ Parque::~Parque()
 {
 	delete [] nombre;
 	delete [] ciudad;
-	delete [] encargado;
 }

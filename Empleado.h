@@ -9,11 +9,11 @@ class Empleado : public Persona
 {
 	private:
 		char* estatus;
-		Parque* parque;
+		int cod_parque;
 
 	public:
 		Empleado();
-		Empleado(char* dni, char* nombre, char* apellido, int telefono, char* correo, char* contrasena, char* estatus, Parque* parque);
+		Empleado(char* dni, char* nombre, char* apellido, int telefono, char* correo, char* contrasena, char* estatus, int cod_parque);
 		Empleado(const Empleado &e);
 		virtual ~Empleado();
 

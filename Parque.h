@@ -13,12 +13,12 @@ class Parque
 		int horaFin;
 		int capacidad;
 		Ciudad* ciudad;
-		Empleado* encargado;
+		int cod_empleado;
 		Actividad* actividades;
 
 	public:
 		Parque();
-		Parque(char* nombre, int horaInicio, int horaFin, int capacidad, Ciudad* ciudad, Empleado* encargado, Actividad* actividades);
+		Parque(char* nombre, int horaInicio, int horaFin, int capacidad, Ciudad* ciudad, int cod_empleado, Actividad* actividades);
 		Parque(const Parque &p);
 		~Parque();
 
