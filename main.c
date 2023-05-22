@@ -16,13 +16,12 @@ void menu();
 
 void actividades()
 {
-	printf("1. Visualizar todas");
-	printf("2. Buscar por Ciudad");
-	printf("3. Buscar por Nivel de dificultad");
-	printf("0. Volver");
+	printf("1. Visualizar todas\n");
+	printf("2. Buscar por Ciudad\n");
+	printf("3. Buscar por Nivel de dificultad\n");
+	printf("0. Volver\n");
 	printf("Elija su opcion:  ");
 	fflush(stdout);
-	printf("\n");
 	int numero;
 	scanf("%d", &numero);
 	fflush(stdout);
@@ -31,6 +30,30 @@ void actividades()
 	{
 		strcpy(sendBuff, "VisualizarActividades");
 		send(s, sendBuff, sizeof(sendBuff), 0);
+
+		do {
+			int num_linea = 1;
+
+			char nombre[30], dificultad[10];
+			int limitePerMin, limitePerMax, edadMin;
+
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			strcpy(nombre, (char*) recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			strcpy(dificultad, (char*) recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			limitePerMin = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			limitePerMax = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			edadMin = atoi(recvBuff);
+
+			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", num_linea, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
+
+			num_linea++;
+		} while(strcmp(recvBuff, " Fin"));
+
+		printf("\n");
 		actividades();
 	} else if(numero == 2)
 	{
@@ -62,12 +85,11 @@ void actividades()
 
 void principal()
 {
-	printf("1. Ver Acitivdades");
-	printf("2. Gestionar Reservas");
-	printf("0. Volver");
+	printf("1. Ver Actividades\n");
+	printf("2. Gestionar Reservas\n");
+	printf("0. Volver\n");
 	printf("Elija su opcion:  ");
 	fflush(stdout);
-	printf("\n");
 	int numero;
 	scanf("%d", &numero);
 	fflush(stdout);
@@ -77,7 +99,6 @@ void principal()
 		actividades();
 	} else if(numero == 2)
 	{
-		registrarse();
 	} else if(numero == 0)
 	{
 		strcpy(sendBuff, "EXIT");
@@ -90,10 +111,10 @@ void inicioSesion()
 {
     char dni[10], contra[20];
     printf("\nINICIO DE SESION\n");
-    printf("Introduzca el DNI: \n");
+    printf("Introduzca el DNI: ");
     fflush(stdout);
     scanf(" %s", dni);
-	printf("Introduzca la contraseña:  \n");
+	printf("Introduzca la contraseña:  ");
 	fflush(stdout);
 	scanf(" %s", contra);
 
@@ -104,14 +125,18 @@ void inicioSesion()
 	strcpy(sendBuff, contra);
 	send(s, sendBuff, sizeof(sendBuff), 0);
 
-	if(recv(s, recvBuff, sizeof(recvBuff), 0) == "Correcto")
+	recv(s, recvBuff, sizeof(recvBuff), 0);
+
+	if(strcmp(recvBuff, " Correcto") == 0)
 	{
-		printf("Inicio de sesion correcto!\n");
+		printf("Inicio de sesion correcto!\n\n");
+		fflush(stdout);
 		principal();
 	} else {
+		printf("DNI/contrasena incorrecto\n\n");
+		fflush(stdout);
 		menu();
 	}
-
 }
 
 void registrarse()
@@ -119,7 +144,8 @@ void registrarse()
 	char dni[10], nombre[20],apellido[20],correo[20],contra[20];
 	int tlf, cod_ciu;
 
-	printf("Registrarse\n");
+
+	printf("REGISTRO CLIENTE\n");
 	printf("Introduce el DNI\n");
 	fflush(stdout);
 	scanf(" %s", dni);
@@ -145,6 +171,23 @@ void registrarse()
 	printf("Introduce la ciudad: \n");
 	fflush(stdout);
 	scanf(" %d", &cod_ciu);
+
+	strcpy(sendBuff, "RegistrarCliente");
+	send(s, sendBuff, sizeof(sendBuff), 0);
+	strcpy(sendBuff, dni);
+	send(s, sendBuff, sizeof(sendBuff), 0);
+	strcpy(sendBuff, nombre);
+	send(s, sendBuff, sizeof(sendBuff), 0);
+	strcpy(sendBuff, apellido);
+	send(s, sendBuff, sizeof(sendBuff), 0);
+	strcpy(sendBuff, (char*)tlf);
+	send(s, sendBuff, sizeof(sendBuff), 0);
+	strcpy(sendBuff, correo);
+	send(s, sendBuff, sizeof(sendBuff), 0);
+	strcpy(sendBuff, contra);
+	send(s, sendBuff, sizeof(sendBuff), 0);
+	strcpy(sendBuff, (char*)cod_ciu);
+	send(s, sendBuff, sizeof(sendBuff), 0);
 
 	printf("Usuario creado correctamente!");
 }
