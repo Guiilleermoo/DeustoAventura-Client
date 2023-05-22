@@ -162,7 +162,154 @@ void actividades()
 		principal();
 	}
 }
+void reservas()
+{
+	printf("\nRESERVAS\n");
+	printf("1. Visualizar mis reservas\n");
+	printf("2. Hacer reservas\n");
+	printf("3. Cancelar reservas\n");
+	printf("0. Volver\n");
+	printf("Elija su opcion:  ");
+	fflush(stdout);
+	int numero;
+	scanf("%d", &numero);
+	fflush(stdout);
+	printf("\n");
 
+	if(numero == 1)
+	{
+		strcpy(sendBuff, "VisualizarReservas");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+
+		int num_linea = 1;
+
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+
+		do {
+			char fecha[30];
+			int cantP, codA, codC;
+
+			strcpy(fecha, (char*) recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+
+			cantP = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			codA = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			codC = atoi(recvBuff);
+
+			printf("Reseva %d -> Fecha: %s - Cantid Personas: %d - Cod Acitividad: %d - Cod Cliente: %d\n", num_linea, fecha, cantP, codA, codC);
+			fflush(stdout);
+
+			num_linea++;
+
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+
+			if(strcmp(recvBuff, "FIN") == 0)
+			{
+				break;
+			}
+
+
+		} while(1);
+
+		printf("\n");
+		actividades();
+	} else if(numero == 2)
+	{
+		char ciudad[20];
+	    printf("Introduzca la ciudad: ");
+	    fflush(stdout);
+	    scanf(" %s", ciudad);
+		strcpy(sendBuff, "VisualizarActividadesPorCiudad");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		strcpy(sendBuff, ciudad);
+		send(s, sendBuff, sizeof(sendBuff), 0);
+
+		int num_linea = 1;
+
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+
+		do {
+			char nombre[30], dificultad[10];
+			int limitePerMin, limitePerMax, edadMin;
+
+			strcpy(nombre, (char*) recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			strcpy(dificultad, (char*) recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			limitePerMin = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			limitePerMax = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			edadMin = atoi(recvBuff);
+
+			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", num_linea, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
+			fflush(stdout);
+
+			num_linea++;
+
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+
+			if(strcmp(recvBuff, "FIN") == 0)
+			{
+				break;
+			}
+
+		} while(1);
+
+		printf("\n");
+		actividades();
+	} else if(numero == 3)
+	{
+		char dificultad[20];
+	    printf("Introduzca la dificultad: ");
+	    fflush(stdout);
+	    scanf(" %s", dificultad);
+		strcpy(sendBuff, "VisualizarActividadesPorDificultad");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		strcpy(sendBuff, dificultad);
+		send(s, sendBuff, sizeof(sendBuff), 0);
+
+		int num_linea = 1;
+
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+
+		do {
+			char nombre[30], dificultad[10];
+			int limitePerMin, limitePerMax, edadMin;
+
+			strcpy(nombre, (char*) recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			strcpy(dificultad, (char*) recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			limitePerMin = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			limitePerMax = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+			edadMin = atoi(recvBuff);
+
+			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", num_linea, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
+			fflush(stdout);
+
+			num_linea++;
+
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+
+			if(strcmp(recvBuff, "FIN") == 0)
+			{
+				break;
+			}
+
+		} while(1);
+
+		printf("\n");
+		actividades();
+	} else if(numero == 0)
+	{
+		principal();
+	}
+}
 void principal()
 {
 	printf("1. Ver Actividades\n");
@@ -179,7 +326,7 @@ void principal()
 		actividades();
 	} else if(numero == 2)
 	{
-
+		reservas();
 	} else if(numero == 0)
 	{
 		strcpy(sendBuff, "EXIT");
