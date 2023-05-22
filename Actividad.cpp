@@ -36,7 +36,8 @@ Actividad::Actividad(const Actividad &a)
 
 Actividad::~Actividad()
 {
-	delete [] nombre, dificultad;
+	delete [] nombre;
+	delete [] dificultad;
 }
 
 void Actividad::imprimir()

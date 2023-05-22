@@ -6,16 +6,112 @@
 #define SERVER_IP "127.0.0.1"
 #define SERVER_PORT 6000
 
+char sendBuff[512], recvBuff[512];
+SOCKET s;
+
+void principal();
+void inicioSesion();
+void registrarse();
+void menu();
+
+void actividades()
+{
+	printf("1. Visualizar todas");
+	printf("2. Buscar por Ciudad");
+	printf("3. Buscar por Nivel de dificultad");
+	printf("0. Volver");
+	printf("Elija su opcion:  ");
+	fflush(stdout);
+	printf("\n");
+	int numero;
+	scanf("%d", &numero);
+	fflush(stdout);
+
+	if(numero == 1)
+	{
+		strcpy(sendBuff, "VisualizarActividades");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		actividades();
+	} else if(numero == 2)
+	{
+		strcpy(sendBuff, "MostrarCiudades");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		char dificultad[20];
+	    printf("Introduzca la ciudad: ");
+	    fflush(stdout);
+	    scanf(" %s", dificultad);
+		strcpy(sendBuff, "VisualizarActividadesPorCiudad");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		actividades();
+	} else if(numero == 3)
+	{
+		char dificultad[20];
+	    printf("Introduzca la dificultad: ");
+	    fflush(stdout);
+	    scanf(" %s", dificultad);
+		strcpy(sendBuff, "VisualizarActividadesPorDificultad");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		strcpy(sendBuff, dificultad);
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		actividades();
+	} else if(numero == 0)
+	{
+		principal();
+	}
+}
+
+void principal()
+{
+	printf("1. Ver Acitivdades");
+	printf("2. Gestionar Reservas");
+	printf("0. Volver");
+	printf("Elija su opcion:  ");
+	fflush(stdout);
+	printf("\n");
+	int numero;
+	scanf("%d", &numero);
+	fflush(stdout);
+
+	if(numero == 1)
+	{
+		actividades();
+	} else if(numero == 2)
+	{
+		registrarse();
+	} else if(numero == 0)
+	{
+		strcpy(sendBuff, "EXIT");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		exit(-1);
+	}
+}
+
 void inicioSesion()
 {
     char dni[10], contra[20];
-    printf("INICIO DE SESION\n");
+    printf("\nINICIO DE SESION\n");
     printf("Introduzca el DNI: \n");
     fflush(stdout);
     scanf(" %s", dni);
 	printf("Introduzca la contraseña:  \n");
 	fflush(stdout);
 	scanf(" %s", contra);
+
+	strcpy(sendBuff, "ComprobarCliente");
+	send(s, sendBuff, sizeof(sendBuff), 0);
+	strcpy(sendBuff, dni);
+	send(s, sendBuff, sizeof(sendBuff), 0);
+	strcpy(sendBuff, contra);
+	send(s, sendBuff, sizeof(sendBuff), 0);
+
+	if(recv(s, recvBuff, sizeof(recvBuff), 0) == "Correcto")
+	{
+		printf("Inicio de sesion correcto!\n");
+		principal();
+	} else {
+		menu();
+	}
+
 }
 
 void registrarse()
@@ -53,44 +149,16 @@ void registrarse()
 	printf("Usuario creado correctamente!");
 }
 
-void principal()
-{
-	printf("1. Ver Acitivdades");
-	printf("2. Gestioanr Reservar");
-	printf("0. Volver");
-	printf("Elija su opcion:  ");
-	fflush(stdout);
-	printf("\n");
-	int numero;
-	scanf("%d", &numero);
-	fflush(stdout);
-}
-
-void actividades()
-{
-	printf("1. Visualizar todas");
-	printf("2. Buscar por Ciudad");
-	printf("3. Buscar por Nivel de dificultad");
-	printf("0. Volver");
-	printf("Elija su opcion:  ");
-	fflush(stdout);
-	printf("\n");
-	int numero;
-	scanf("%d", &numero);
-	fflush(stdout);
-}
-
 void menu()
 {
-	printf("DEUTOAVENTURA");
-	printf("1. Iniciar Sesion");
-	printf("2, Registrarse");
-	printf("0. Salir");
+	printf("DEUTOAVENTURA\n");
+	printf("1. Iniciar Sesion\n");
+	printf("2, Registrarse\n");
+	printf("0. Salir\n");
 	printf("Elija su opcion:  ");
 	fflush(stdout);
-	printf("\n");
 	int numero;
-	scanf("%d", &numero);
+	scanf(" %d", &numero);
 	fflush(stdout);
 
 	if(numero == 1)
@@ -101,6 +169,8 @@ void menu()
 		registrarse();
 	} else if(numero == 0)
 	{
+		strcpy(sendBuff, "EXIT");
+		send(s, sendBuff, sizeof(sendBuff), 0);
 		exit(-1);
 	}
 }
@@ -108,14 +178,15 @@ void menu()
 int main()
 {
 	WSADATA wsaData;
-	SOCKET s;
+
 	struct sockaddr_in server;
-	char sendBuff[512], recvBuff[512];
+
 
 	printf("\nInitialising Winsock...\n");
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 	{
 		printf("Failed. Error Code : %d", WSAGetLastError());
+		fflush(stdout);
 		return -1;
 	}
 
@@ -125,11 +196,13 @@ int main()
 	if ((s = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
 	{
 		printf("Could not create socket : %d", WSAGetLastError());
+		fflush(stdout);
 		WSACleanup();
 		return -1;
 	}
 
 	printf("Socket created.\n");
+	fflush(stdout);
 
 	server.sin_addr.s_addr = inet_addr(SERVER_IP);
 	server.sin_family = AF_INET;
@@ -139,6 +212,7 @@ int main()
 	if (connect(s, (struct sockaddr*) &server, sizeof(server)) == SOCKET_ERROR)
 	{
 		printf("Connection error: %d", WSAGetLastError());
+		fflush(stdout);
 		closesocket(s);
 		WSACleanup();
 		return -1;
@@ -146,6 +220,7 @@ int main()
 
 	printf("Connection stablished with: %s (%d)\n", inet_ntoa(server.sin_addr),
 			ntohs(server.sin_port));
+	fflush(stdout);
 
 	//SEND and RECEIVE data (CLIENT/SERVER PROTOCOL)
 	menu();
