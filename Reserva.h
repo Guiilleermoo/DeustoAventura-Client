@@ -19,6 +19,7 @@ public:
 	Reserva(int codC,int codA,char* f,int cantP);
 	virtual ~Reserva();
 	Reserva(const Reserva &r);
+	void imprimir();
 };
 
 #endif /* RESERVA_H_ */

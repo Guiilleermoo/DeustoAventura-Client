@@ -7,6 +7,8 @@
 
 #include "Reserva.h"
 #include <string.h>
+#include <iostream>
+using namespace std;
 Reserva::Reserva() {
 	// TODO Auto-generated constructor stub
 this->cantPersonas=0;
@@ -35,4 +37,7 @@ Reserva::Reserva(const Reserva &r){
 		this->codCliente=r.codCliente;
 		this->fecha=new char[strlen(r.fecha)+1];
 		strcpy(this->fecha,r.fecha);
+}
+void Reserva:: imprimir(){
+	cout<<"Actividad: "<<this->codActividad<< "Fecha: "<<this->fecha<<"Cliente: " <<this->codCliente<< "Cantidad de personas: "<<this->cantPersonas;
 }

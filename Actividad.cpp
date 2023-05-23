@@ -42,7 +42,7 @@ Actividad::~Actividad()
 
 void Actividad::imprimir()
 {
-	cout << "Nombre de actividad: " << nombre << endl;
-	cout << "Dificultad: " << dificultad << endl;
-	cout << "Minimo de personas: " << limitePerMin << "		" << "Maximo de personas: " << limitePerMax << "	" << "Edad minima: " << edadMin << endl;
+	cout << "Nombre de actividad: " << nombre ;
+	cout << "Dificultad: " << dificultad ;
+	cout << "Minimo de personas: " << limitePerMin  << "Maximo de personas: " << limitePerMax << "Edad minima: " << edadMin << endl;
 }

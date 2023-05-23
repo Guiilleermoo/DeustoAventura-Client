@@ -5,14 +5,17 @@
 
 #define SERVER_IP "127.0.0.1"
 #define SERVER_PORT 6000
-
+#include "Reserva.h"
+#include "Actividad.h"
 char sendBuff[512], recvBuff[512];
 SOCKET s;
-
+#include <iostream>
+using namespace std;
 void principal();
 void inicioSesion();
 void registrarse();
 void menu();
+void reservas();
 void mostrarReservas(){
 	strcpy(sendBuff, "VisualizarReservas");
 			send(s, sendBuff, sizeof(sendBuff), 0);
@@ -27,7 +30,8 @@ void mostrarReservas(){
 
 				strcpy(fecha, (char*) recvBuff);
 				if(strcmp(recvBuff, "TAM0") == 0){
-						printf("No hay reservas.\n");
+					cout<<"No hay reservas"<<endl;
+
 						reservas();
 						break;
 				}
@@ -38,8 +42,9 @@ void mostrarReservas(){
 				codA = atoi(recvBuff);
 				recv(s, recvBuff, sizeof(recvBuff), 0);
 				codC = atoi(recvBuff);
+				Reserva r(codC, codA, fecha, cantP);
+				r.imprimir();
 
-				printf("Reseva %d -> Fecha: %s - Cantid Personas: %d - Cod Acitividad: %d - Cod Cliente: %d\n", num_linea, fecha, cantP, codA, codC);
 				fflush(stdout);
 
 				num_linea++;
@@ -78,13 +83,17 @@ void mostrarActividades()
 		recv(s, recvBuff, sizeof(recvBuff), 0);
 		edadMin = atoi(recvBuff);
 
-		printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", codigo, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
+		Actividad a(nombre,dificultad,limitePerMin,limitePerMax,edadMin);
+		a.imprimir();
+
+
 		fflush(stdout);
 
 		recv(s, recvBuff, sizeof(recvBuff), 0);
 		if(strcmp(recvBuff, "TAM0") == 0){
-			printf("No hay reservas.");
-									break;
+			cout<<"No hay reservas.";
+
+				break;
 				}
 		if(strcmp(recvBuff, "FIN") == 0)
 		{
@@ -93,22 +102,24 @@ void mostrarActividades()
 
 	} while(1);
 
-	printf("\n");
+	cout<<endl;
 }
 
 void actividades()
 {
-	printf("\nACTIVIDADES\n");
-	printf("1. Visualizar todas\n");
-	printf("2. Buscar por Ciudad\n");
-	printf("3. Buscar por Nivel de dificultad\n");
-	printf("0. Volver\n");
-	printf("Elija su opcion:  ");
+	cout<<endl<<"ACTIVIDADES"<<endl;
+	cout<<"1. Visualizar todas"<<endl;
+	cout<<"2. Buscar por Ciudad"<<endl;
+	cout<<"3. Buscar por Nivel de dificultad"<<endl;
+	cout<<"0.volver"<<endl;
+	cout<<"Elija su opcion:  ";
+
 	fflush(stdout);
 	int numero;
-	scanf("%d", &numero);
+	cin>>numero;
+
 	fflush(stdout);
-	printf("\n");
+	cout<<endl;
 
 	if(numero == 1)
 	{
@@ -117,7 +128,8 @@ void actividades()
 	} else if(numero == 2)
 	{
 		char ciudad[20];
-	    printf("Introduzca la ciudad: ");
+		cout<<"Introduzca la ciudad: ";
+
 	    fflush(stdout);
 	    scanf(" %s", ciudad);
 		strcpy(sendBuff, "VisualizarActividadesPorCiudad");
@@ -131,9 +143,9 @@ void actividades()
 			char nombre[30], dificultad[10];
 			int codigo, limitePerMin, limitePerMax, edadMin;
 			if(strcmp(recvBuff, "TAM0") == 0){
-						printf("\nNo hay actividades en esta ciudad.");
-						fflush(stdout);
-						break;
+				cout<<endl<<"No hay actividades en esta ciudad.";
+					fflush(stdout);
+					break;
 				}
 			codigo = atoi(recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
@@ -149,8 +161,8 @@ void actividades()
 			limitePerMax = atoi(recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			edadMin = atoi(recvBuff);
-
-			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", codigo, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
+			Actividad a(nombre,dificultad,limitePerMin,limitePerMax,edadMin);
+			a.imprimir();
 			fflush(stdout);
 
 
@@ -161,15 +173,17 @@ void actividades()
 				break;
 			}
 		}
+		cout<<endl;
 
-		printf("\n");
 		actividades();
 	} else if(numero == 3)
 	{
 		char dificultad[20];
-	    printf("Introduzca la dificultad: ");
+		cout<<"Introduzca la dificultad: ";
+
 	    fflush(stdout);
-	    scanf(" %s", dificultad);
+	    cin>>dificultad;
+
 		strcpy(sendBuff, "VisualizarActividadesPorDificultad");
 		send(s, sendBuff, sizeof(sendBuff), 0);
 		strcpy(sendBuff, dificultad);
@@ -181,8 +195,8 @@ void actividades()
 			char nombre[30], dificultad[10];
 			int codigo, limitePerMin, limitePerMax, edadMin;
 			if(strcmp(recvBuff, "TAM0") == 0){
-											printf("No hay actividades con esta dificultad.");
-												break;
+				cout<<"No hay actividades con esta dificultad.";
+						break;
 									}
 			codigo = atoi(recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
@@ -197,8 +211,9 @@ void actividades()
 			limitePerMax = atoi(recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			edadMin = atoi(recvBuff);
+			Actividad a(nombre,dificultad,limitePerMin,limitePerMax,edadMin);
+			a.imprimir();
 
-			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", codigo, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
 			fflush(stdout);
 
 			recv(s, recvBuff, sizeof(recvBuff), 0);
@@ -209,8 +224,8 @@ void actividades()
 			}
 
 		} while(1);
+		cout<<endl;
 
-		printf("\n");
 		actividades();
 	} else if(numero == 0)
 	{
@@ -221,23 +236,24 @@ void actividades()
 }
 void reservas()
 {
-	printf("\nRESERVAS\n");
-	printf("1. Visualizar mis reservas\n");
-	printf("2. Hacer reservas\n");
-	printf("3. Cancelar reservas\n");
-	printf("0. Volver\n");
-	printf("Elija su opcion:  ");
+	cout<<endl<<"RESERVAS"<<endl;
+	cout<<"1. Visualizar mis reserva"<<endl;
+	cout<<"2. Hacer reservas"<<endl;
+	cout<<"3. Cancelar reservas"<<endl;
+	cout<<"0. Volver";
+	cout<<"Elija su opcion: ";
+
 	fflush(stdout);
 	int numero;
-	scanf("%d", &numero);
+	cin>>numero;
 	fflush(stdout);
-	printf("\n");
+	cout<<endl;
 
 	if(numero == 1)
 	{
 
 		mostrarReservas();
-		printf("\n");
+		cout<<endl;
 		reservas();
 	} else if(numero == 2)
 	{
@@ -246,21 +262,24 @@ void reservas()
 		int cantPersonas;
 
 		mostrarActividades();
-		printf("Introduce el codigo de actividad: ");
+		cout<<"Introduce el codigo de actividad: ";
+
 		fflush(stdout);
-		scanf(" %d", &codActividad);
+		cin>>codActividad;
 		fflush(stdout);
-		printf("\n");
-		printf("Introduce la fecha: ");
+		cout<<endl;
+		cout<<"Introduce la fecha:";
+
 		fflush(stdout);
-		scanf(" %s", fecha);
+		cin>>fecha;
 		fflush(stdout);
-		printf("\n");
-		printf("Introduce las cantidad de personas que asistirán: ");
+		cout<<endl;
+		cout<<"Introduce las cantidad de personas que asistirán: ";
+
 		fflush(stdout);
-		scanf(" %d", &cantPersonas);
+		cin>>cantPersonas;
 		fflush(stdout);
-		printf("\n");
+		cout<<endl;
 
 
 		strcpy(sendBuff, "R8");
@@ -279,8 +298,8 @@ void reservas()
 			break;
 		}
 		}while(1);
+		cout<<"Reserva realizada correctamente"<<endl;
 
-		printf("Reserva realizada correctamente\n");
 			fflush(stdout);
 			reservas();
 
@@ -289,17 +308,21 @@ void reservas()
 	{	mostrarReservas();
 		int codActividad;
 		char fecha[30];
-		printf("\nBORRAR RESERVA\n");
-		printf("Introduce el codigo de actividad: ");
+		cout<<endl<<"BORRAR RESERVA"<<endl;
+		cout<<"Introduce el codigo de actividad: ";
+
 		fflush(stdout);
-		scanf(" %d", &codActividad);
+		cin>>codActividad;
+
 		fflush(stdout);
-		printf("\n");
-		printf("Introduce la fecha: ");
+		cout<<endl;
+		cout<<"Introduce la fecha: ";
+
 		fflush(stdout);
-		scanf(" %s", fecha);
+		cin>>fecha;
+
 		fflush(stdout);
-		printf("\n");
+		cout<<endl;
 
 
 		strcpy(sendBuff, "RD");
@@ -317,8 +340,8 @@ void reservas()
 			break;
 		}
 		}while(1);
+		cout<< "Reserva borrada correctamente"<<endl;
 
-		printf("Reserva borrada correctamente\n");
 			fflush(stdout);
 			reservas();
 
@@ -331,15 +354,17 @@ void reservas()
 }
 void principal()
 {
-	printf("\nMENU CLIENTE\n");
-	printf("1. Ver Actividades\n");
-	printf("2. Gestionar Reservas\n");
-	printf("0. Volver\n");
-	printf("Elija su opcion:  ");
+	cout<<endl<<"MENU CLIENTE"<<endl;
+	cout<<"1. Ver Actividades"<<endl;
+	cout<<"2. Gestionar Reservas"<<endl;
+	cout<<"0.Volver"<<endl;
+	cout<<"Elija su opcion: ";
+
 
 	fflush(stdout);
 	int numero;
-	scanf("%d", &numero);
+	cin>>numero;
+
 	fflush(stdout);
 
 	if(numero == 1)
@@ -359,13 +384,15 @@ void principal()
 void inicioSesion()
 {
     char dni[10], contra[20];
-    printf("\nINICIO DE SESION\n");
-    printf("Introduzca el DNI: ");
+    cout<<endl<<"INICIO DE SESION"<<endl;
+    cout<<"Introduzca el DNI: ";
+
     fflush(stdout);
-    scanf(" %s", dni);
-	printf("Introduzca la contraseña:  ");
+    cin>>dni;
+    cout<<"Introduzca la contraseña: ";
+
 	fflush(stdout);
-	scanf(" %s", contra);
+	cin>>contra;
 
 	strcpy(sendBuff, "ComprobarCliente");
 	send(s, sendBuff, sizeof(sendBuff), 0);
@@ -378,11 +405,13 @@ void inicioSesion()
 
 	if(strcmp(recvBuff, " Correcto") == 0)
 	{
-		printf("Inicio de sesion correcto!\n\n");
+		cout<<"Inicio de sesion correcto!"<<endl<<endl;
+
 		fflush(stdout);
 		principal();
 	} else {
-		printf("DNI/contrasena incorrecto\n\n");
+		cout<<"DNI/contrasena incorrecto"<<endl<<endl;
+
 		fflush(stdout);
 		menu();
 	}
@@ -393,33 +422,39 @@ void registrarse()
 	char dni[10], nombre[20],apellido[20],correo[20],contra[20];
 	int tlf, cod_ciu;
 
+	cout<<"REGISTRO CLIENTE"<<endl;
+	cout<<"Introduce el DNI"<<endl;
 
-	printf("REGISTRO CLIENTE\n");
-	printf("Introduce el DNI\n");
 	fflush(stdout);
-	scanf(" %s", dni);
-	printf("Introduce el nombre: \n");
+	cin>>dni;
+	cout<<"Introduce el nombre: "<<endl;
+
 	fflush(stdout);
-	scanf(" %s", nombre);
-	printf("Introduce el apellido: \n");
+	cin>>nombre;
+	cout<<"Introduce el apellido: "<<endl;
+
 	fflush(stdout);
-	scanf(" %s", apellido);
-	printf("Introduce el teléfono: \n");
+	cin>>apellido;
+	cout<<"Introduce el teléfono: "<<endl;
+
 	fflush(stdout);
-	scanf(" %d", &tlf);
-	printf("Introduce el correo: \n");
+	cin>>tlf;
+	cout<<"Introduce el correo: "<<endl;
+
 	fflush(stdout);
-	scanf(" %s", correo);
-	printf("Introduce la contrasena: \n");
+	cin>>correo;
+	cout<<"Introduce la contrasena: "<<endl;
+
 	fflush(stdout);
-	scanf(" %s", contra);
+	cin>>contra;
+
 
 	//Mostrar las ciudades y que elija el usuario
 
+	cout<<"Introduce la ciudad: "<<endl;
 
-	printf("Introduce la ciudad: \n");
 	fflush(stdout);
-	scanf(" %d", &cod_ciu);
+	cin>>cod_ciu;
 
 	strcpy(sendBuff, "REG");
 	send(s, sendBuff, sizeof(sendBuff), 0);
@@ -446,20 +481,22 @@ void registrarse()
 				break;
 			}
 			}while(1);
-	printf("Usuario creado correctamente!");
+	cout<<"Usuario creado correctamente!";
+
 	menu();
 }
 
 void menu()
 {
-	printf("\nDEUTOAVENTURA\n");
-	printf("1. Iniciar Sesion\n");
-	printf("2. Registrarse\n");
-	printf("0. Salir\n");
-	printf("Elija su opcion:  ");
+	cout<<endl<<"DEUSTOAVENTURA"<<endl;
+	cout<<"1. Iniciar Sesion"<<endl;
+	cout<<"2. Registrarse"<<endl;
+	cout<<"0. Salir"<<endl;
+	cout<<"Elija su opcion:  ";
+
 	fflush(stdout);
 	int numero;
-	scanf(" %d", &numero);
+	cin>>numero;
 	fflush(stdout);
 
 	if(numero == 1)
@@ -486,27 +523,29 @@ int main()
 
 	struct sockaddr_in server;
 
+	cout<<endl<<"Initialising Winsock..."<<endl;
 
-	printf("\nInitialising Winsock...\n");
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 	{
-		printf("Failed. Error Code : %d", WSAGetLastError());
+		cout<<"Failed. Error Code :"<<WSAGetLastError();
+
 		fflush(stdout);
 		return -1;
 	}
+	cout<<"Initialised."<<endl;
 
-	printf("Initialised.\n");
 
 	//SOCKET creation
 	if ((s = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
 	{
-		printf("Could not create socket : %d", WSAGetLastError());
+		cout<<"Could not create socket :"<<WSAGetLastError();
+
 		fflush(stdout);
 		WSACleanup();
 		return -1;
 	}
+	cout<<"Socket created."<<endl;
 
-	printf("Socket created.\n");
 	fflush(stdout);
 
 	server.sin_addr.s_addr = inet_addr(SERVER_IP);
@@ -516,15 +555,15 @@ int main()
 	//CONNECT to remote server
 	if (connect(s, (struct sockaddr*) &server, sizeof(server)) == SOCKET_ERROR)
 	{
-		printf("Connection error: %d", WSAGetLastError());
+		cout<<"Connection error: "<<WSAGetLastError();
+
 		fflush(stdout);
 		closesocket(s);
 		WSACleanup();
 		return -1;
 	}
+	cout<<"Connection stablished with: "<<inet_ntoa(server.sin_addr)<<" "<<ntohs(server.sin_port)<<endl;
 
-	printf("Connection stablished with: %s (%d)\n", inet_ntoa(server.sin_addr),
-			ntohs(server.sin_port));
 	fflush(stdout);
 
 	//SEND and RECEIVE data (CLIENT/SERVER PROTOCOL)
