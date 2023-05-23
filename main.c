@@ -311,6 +311,7 @@ void principal()
 	printf("2. Gestionar Reservas\n");
 	printf("0. Volver\n");
 	printf("Elija su opcion:  ");
+
 	fflush(stdout);
 	int numero;
 	scanf("%d", &numero);
@@ -324,9 +325,7 @@ void principal()
 		reservas();
 	} else if(numero == 0)
 	{
-		strcpy(sendBuff, "EXIT");
-		send(s, sendBuff, sizeof(sendBuff), 0);
-		exit(-1);
+		menu();
 	}
 }
 
@@ -447,6 +446,7 @@ void menu()
 		strcpy(sendBuff, "EXIT");
 		send(s, sendBuff, sizeof(sendBuff), 0);
 		exit(-1);
+
 	}
 }
 
