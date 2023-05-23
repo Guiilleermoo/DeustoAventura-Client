@@ -21,11 +21,16 @@ void mostrarReservas(){
 
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 
-			do {
+				while(1) {
 				char fecha[30];
 				int cantP, codA, codC;
 
 				strcpy(fecha, (char*) recvBuff);
+				if(strcmp(recvBuff, "TAM0") == 0){
+						printf("No hay reservas.\n");
+						reservas();
+						break;
+				}
 				recv(s, recvBuff, sizeof(recvBuff), 0);
 
 				cantP = atoi(recvBuff);
@@ -41,12 +46,13 @@ void mostrarReservas(){
 
 				recv(s, recvBuff, sizeof(recvBuff), 0);
 
-				if(strcmp(recvBuff, "FIN") == 0)
+				 if(strcmp(recvBuff, "FIN") == 0)
 				{
 					break;
+
 				}
 
-			} while(1);
+			}
 }
 void mostrarActividades()
 {
@@ -76,7 +82,10 @@ void mostrarActividades()
 		fflush(stdout);
 
 		recv(s, recvBuff, sizeof(recvBuff), 0);
-
+		if(strcmp(recvBuff, "TAM0") == 0){
+			printf("No hay reservas.");
+									break;
+				}
 		if(strcmp(recvBuff, "FIN") == 0)
 		{
 			break;
@@ -89,7 +98,7 @@ void mostrarActividades()
 
 void actividades()
 {
-	printf("ACTIVIDADES\n");
+	printf("\nACTIVIDADES\n");
 	printf("1. Visualizar todas\n");
 	printf("2. Buscar por Ciudad\n");
 	printf("3. Buscar por Nivel de dificultad\n");
@@ -118,12 +127,19 @@ void actividades()
 
 		recv(s, recvBuff, sizeof(recvBuff), 0);
 
-		do {
+		while(1) {
 			char nombre[30], dificultad[10];
 			int codigo, limitePerMin, limitePerMax, edadMin;
-
+			if(strcmp(recvBuff, "TAM0") == 0){
+						printf("\nNo hay actividades en esta ciudad.");
+						fflush(stdout);
+						break;
+				}
 			codigo = atoi(recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
+
+
+
 			strcpy(nombre, (char*) recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			strcpy(dificultad, (char*) recvBuff);
@@ -144,8 +160,7 @@ void actividades()
 			{
 				break;
 			}
-
-		} while(1);
+		}
 
 		printf("\n");
 		actividades();
@@ -165,9 +180,14 @@ void actividades()
 		do {
 			char nombre[30], dificultad[10];
 			int codigo, limitePerMin, limitePerMax, edadMin;
-
+			if(strcmp(recvBuff, "TAM0") == 0){
+											printf("No hay actividades con esta dificultad.");
+												break;
+									}
 			codigo = atoi(recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
+
+
 			strcpy(nombre, (char*) recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			strcpy(dificultad, (char*) recvBuff);
@@ -195,6 +215,8 @@ void actividades()
 	} else if(numero == 0)
 	{
 		principal();
+	}else{
+		actividades();
 	}
 }
 void reservas()
@@ -267,7 +289,7 @@ void reservas()
 	{	mostrarReservas();
 		int codActividad;
 		char fecha[30];
-		printf("BORRAR RESERVA\n");
+		printf("\nBORRAR RESERVA\n");
 		printf("Introduce el codigo de actividad: ");
 		fflush(stdout);
 		scanf(" %d", &codActividad);
@@ -303,10 +325,13 @@ void reservas()
 	} else if(numero == 0)
 	{
 		principal();
+	}else{
+		reservas();
 	}
 }
 void principal()
 {
+	printf("\nMENU CLIENTE\n");
 	printf("1. Ver Actividades\n");
 	printf("2. Gestionar Reservas\n");
 	printf("0. Volver\n");
@@ -326,6 +351,8 @@ void principal()
 	} else if(numero == 0)
 	{
 		menu();
+	}else{
+		principal();
 	}
 }
 
@@ -425,9 +452,9 @@ void registrarse()
 
 void menu()
 {
-	printf("DEUTOAVENTURA\n");
+	printf("\nDEUTOAVENTURA\n");
 	printf("1. Iniciar Sesion\n");
-	printf("2, Registrarse\n");
+	printf("2. Registrarse\n");
 	printf("0. Salir\n");
 	printf("Elija su opcion:  ");
 	fflush(stdout);
@@ -447,6 +474,9 @@ void menu()
 		send(s, sendBuff, sizeof(sendBuff), 0);
 		exit(-1);
 
+	}else{
+
+		menu();
 	}
 }
 
