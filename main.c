@@ -13,7 +13,41 @@ void principal();
 void inicioSesion();
 void registrarse();
 void menu();
+void mostrarReservas(){
+	strcpy(sendBuff, "VisualizarReservas");
+			send(s, sendBuff, sizeof(sendBuff), 0);
 
+			int num_linea = 1;
+
+			recv(s, recvBuff, sizeof(recvBuff), 0);
+
+			do {
+				char fecha[30];
+				int cantP, codA, codC;
+
+				strcpy(fecha, (char*) recvBuff);
+				recv(s, recvBuff, sizeof(recvBuff), 0);
+
+				cantP = atoi(recvBuff);
+				recv(s, recvBuff, sizeof(recvBuff), 0);
+				codA = atoi(recvBuff);
+				recv(s, recvBuff, sizeof(recvBuff), 0);
+				codC = atoi(recvBuff);
+
+				printf("Reseva %d -> Fecha: %s - Cantid Personas: %d - Cod Acitividad: %d - Cod Cliente: %d\n", num_linea, fecha, cantP, codA, codC);
+				fflush(stdout);
+
+				num_linea++;
+
+				recv(s, recvBuff, sizeof(recvBuff), 0);
+
+				if(strcmp(recvBuff, "FIN") == 0)
+				{
+					break;
+				}
+
+			} while(1);
+}
 void mostrarActividades()
 {
 	strcpy(sendBuff, "VisualizarActividades");
@@ -179,40 +213,8 @@ void reservas()
 
 	if(numero == 1)
 	{
-		strcpy(sendBuff, "VisualizarReservas");
-		send(s, sendBuff, sizeof(sendBuff), 0);
 
-		int num_linea = 1;
-
-		recv(s, recvBuff, sizeof(recvBuff), 0);
-
-		do {
-			char fecha[30];
-			int cantP, codA, codC;
-
-			strcpy(fecha, (char*) recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-
-			cantP = atoi(recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			codA = atoi(recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			codC = atoi(recvBuff);
-
-			printf("Reseva %d -> Fecha: %s - Cantid Personas: %d - Cod Acitividad: %d - Cod Cliente: %d\n", num_linea, fecha, cantP, codA, codC);
-			fflush(stdout);
-
-			num_linea++;
-
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-
-			if(strcmp(recvBuff, "FIN") == 0)
-			{
-				break;
-			}
-
-		} while(1);
-
+		mostrarReservas();
 		printf("\n");
 		reservas();
 	} else if(numero == 2)
@@ -224,7 +226,7 @@ void reservas()
 		mostrarActividades();
 		printf("Introduce el codigo de actividad: ");
 		fflush(stdout);
-		scanf("%d", &codActividad);
+		scanf(" %d", &codActividad);
 		fflush(stdout);
 		printf("\n");
 		printf("Introduce la fecha: ");
@@ -234,27 +236,69 @@ void reservas()
 		printf("\n");
 		printf("Introduce las cantidad de personas que asistirán: ");
 		fflush(stdout);
-		scanf("%d", &cantPersonas);
+		scanf(" %d", &cantPersonas);
 		fflush(stdout);
 		printf("\n");
 
-		strcpy(sendBuff, "HacerReserva");
+
+		strcpy(sendBuff, "R8");
 		send(s, sendBuff, sizeof(sendBuff), 0);
-		strcpy(sendBuff, (char*) codActividad);
+		sprintf(sendBuff, "%d", codActividad);
 		fflush(stdout);
 		send(s, sendBuff, sizeof(sendBuff), 0);
 		strcpy(sendBuff, fecha);
 		send(s, sendBuff, sizeof(sendBuff), 0);
-		strcpy(sendBuff, (char*) cantPersonas);
+		sprintf(sendBuff, "%d", cantPersonas);
 		send(s, sendBuff, sizeof(sendBuff), 0);
 
 		recv(s, recvBuff, sizeof(recvBuff), 0);
+		do{
+		if(strcmp(recvBuff, " R")){
+			break;
+		}
+		}while(1);
 
-		if(strcmp(recvBuff, "Reservado"))
-			printf("Reserva realizada\n");
+		printf("Reserva realizada correctamente\n");
+			fflush(stdout);
+			reservas();
+
 
 	} else if(numero == 3)
-	{
+	{	mostrarReservas();
+		int codActividad;
+		char fecha[30];
+		printf("BORRAR RESERVA\n");
+		printf("Introduce el codigo de actividad: ");
+		fflush(stdout);
+		scanf(" %d", &codActividad);
+		fflush(stdout);
+		printf("\n");
+		printf("Introduce la fecha: ");
+		fflush(stdout);
+		scanf(" %s", fecha);
+		fflush(stdout);
+		printf("\n");
+
+
+		strcpy(sendBuff, "RD");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		sprintf(sendBuff, "%d", codActividad);
+		fflush(stdout);
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		strcpy(sendBuff, fecha);
+		send(s, sendBuff, sizeof(sendBuff), 0);
+
+
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		do{
+		if(strcmp(recvBuff, " RF")){
+			break;
+		}
+		}while(1);
+
+		printf("Reserva borrada correctamente\n");
+			fflush(stdout);
+			reservas();
 
 	} else if(numero == 0)
 	{
@@ -351,7 +395,7 @@ void registrarse()
 	fflush(stdout);
 	scanf(" %d", &cod_ciu);
 
-	strcpy(sendBuff, "RegistrarCliente");
+	strcpy(sendBuff, "REG");
 	send(s, sendBuff, sizeof(sendBuff), 0);
 	strcpy(sendBuff, dni);
 	send(s, sendBuff, sizeof(sendBuff), 0);
@@ -359,16 +403,25 @@ void registrarse()
 	send(s, sendBuff, sizeof(sendBuff), 0);
 	strcpy(sendBuff, apellido);
 	send(s, sendBuff, sizeof(sendBuff), 0);
-	strcpy(sendBuff, (char*)tlf);
+	sprintf(sendBuff, "%d", tlf);
 	send(s, sendBuff, sizeof(sendBuff), 0);
 	strcpy(sendBuff, correo);
 	send(s, sendBuff, sizeof(sendBuff), 0);
 	strcpy(sendBuff, contra);
 	send(s, sendBuff, sizeof(sendBuff), 0);
-	strcpy(sendBuff, (char*)cod_ciu);
+	sprintf(sendBuff, "%d", cod_ciu);
 	send(s, sendBuff, sizeof(sendBuff), 0);
 
+
+
+	recv(s, recvBuff, sizeof(recvBuff), 0);
+			do{
+			if(strcmp(recvBuff, " REGE")){
+				break;
+			}
+			}while(1);
 	printf("Usuario creado correctamente!");
+	menu();
 }
 
 void menu()
