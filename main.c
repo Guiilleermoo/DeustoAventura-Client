@@ -14,6 +14,45 @@ void inicioSesion();
 void registrarse();
 void menu();
 
+void mostrarActividades()
+{
+	strcpy(sendBuff, "VisualizarActividades");
+	send(s, sendBuff, sizeof(sendBuff), 0);
+
+
+	recv(s, recvBuff, sizeof(recvBuff), 0);
+
+	do {
+		char nombre[30], dificultad[10];
+		int codigo, limitePerMin, limitePerMax, edadMin;
+
+		codigo = atoi(recvBuff);
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		strcpy(nombre, (char*) recvBuff);
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		strcpy(dificultad, (char*) recvBuff);
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		limitePerMin = atoi(recvBuff);
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		limitePerMax = atoi(recvBuff);
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		edadMin = atoi(recvBuff);
+
+		printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", codigo, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
+		fflush(stdout);
+
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+
+		if(strcmp(recvBuff, "FIN") == 0)
+		{
+			break;
+		}
+
+	} while(1);
+
+	printf("\n");
+}
+
 void actividades()
 {
 	printf("ACTIVIDADES\n");
@@ -30,42 +69,7 @@ void actividades()
 
 	if(numero == 1)
 	{
-		strcpy(sendBuff, "VisualizarActividades");
-		send(s, sendBuff, sizeof(sendBuff), 0);
-
-		int num_linea = 1;
-
-		recv(s, recvBuff, sizeof(recvBuff), 0);
-
-		do {
-			char nombre[30], dificultad[10];
-			int limitePerMin, limitePerMax, edadMin;
-
-			strcpy(nombre, (char*) recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			strcpy(dificultad, (char*) recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			limitePerMin = atoi(recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			limitePerMax = atoi(recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			edadMin = atoi(recvBuff);
-
-			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", num_linea, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
-			fflush(stdout);
-
-			num_linea++;
-
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-
-			if(strcmp(recvBuff, "FIN") == 0)
-			{
-				break;
-			}
-
-		} while(1);
-
-		printf("\n");
+		mostrarActividades();
 		actividades();
 	} else if(numero == 2)
 	{
@@ -78,14 +82,14 @@ void actividades()
 		strcpy(sendBuff, ciudad);
 		send(s, sendBuff, sizeof(sendBuff), 0);
 
-		int num_linea = 1;
-
 		recv(s, recvBuff, sizeof(recvBuff), 0);
 
 		do {
 			char nombre[30], dificultad[10];
-			int limitePerMin, limitePerMax, edadMin;
+			int codigo, limitePerMin, limitePerMax, edadMin;
 
+			codigo = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
 			strcpy(nombre, (char*) recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			strcpy(dificultad, (char*) recvBuff);
@@ -96,10 +100,9 @@ void actividades()
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			edadMin = atoi(recvBuff);
 
-			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", num_linea, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
+			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", codigo, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
 			fflush(stdout);
 
-			num_linea++;
 
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 
@@ -123,14 +126,14 @@ void actividades()
 		strcpy(sendBuff, dificultad);
 		send(s, sendBuff, sizeof(sendBuff), 0);
 
-		int num_linea = 1;
-
 		recv(s, recvBuff, sizeof(recvBuff), 0);
 
 		do {
 			char nombre[30], dificultad[10];
-			int limitePerMin, limitePerMax, edadMin;
+			int codigo, limitePerMin, limitePerMax, edadMin;
 
+			codigo = atoi(recvBuff);
+			recv(s, recvBuff, sizeof(recvBuff), 0);
 			strcpy(nombre, (char*) recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			strcpy(dificultad, (char*) recvBuff);
@@ -141,10 +144,8 @@ void actividades()
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			edadMin = atoi(recvBuff);
 
-			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", num_linea, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
+			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", codigo, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
 			fflush(stdout);
-
-			num_linea++;
 
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 
@@ -210,101 +211,51 @@ void reservas()
 				break;
 			}
 
-
 		} while(1);
 
 		printf("\n");
-		actividades();
+		reservas();
 	} else if(numero == 2)
 	{
-		char ciudad[20];
-	    printf("Introduzca la ciudad: ");
-	    fflush(stdout);
-	    scanf(" %s", ciudad);
-		strcpy(sendBuff, "VisualizarActividadesPorCiudad");
-		send(s, sendBuff, sizeof(sendBuff), 0);
-		strcpy(sendBuff, ciudad);
-		send(s, sendBuff, sizeof(sendBuff), 0);
+		int codActividad;
+		char fecha[30];
+		int cantPersonas;
 
-		int num_linea = 1;
+		mostrarActividades();
+		printf("Introduce el codigo de actividad: ");
+		fflush(stdout);
+		scanf("%d", &codActividad);
+		fflush(stdout);
+		printf("\n");
+		printf("Introduce la fecha: ");
+		fflush(stdout);
+		scanf(" %s", fecha);
+		fflush(stdout);
+		printf("\n");
+		printf("Introduce las cantidad de personas que asistirán: ");
+		fflush(stdout);
+		scanf("%d", &cantPersonas);
+		fflush(stdout);
+		printf("\n");
+
+		strcpy(sendBuff, "HacerReserva");
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		strcpy(sendBuff, (char*) codActividad);
+		fflush(stdout);
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		strcpy(sendBuff, fecha);
+		send(s, sendBuff, sizeof(sendBuff), 0);
+		strcpy(sendBuff, (char*) cantPersonas);
+		send(s, sendBuff, sizeof(sendBuff), 0);
 
 		recv(s, recvBuff, sizeof(recvBuff), 0);
 
-		do {
-			char nombre[30], dificultad[10];
-			int limitePerMin, limitePerMax, edadMin;
+		if(strcmp(recvBuff, "Reservado"))
+			printf("Reserva realizada\n");
 
-			strcpy(nombre, (char*) recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			strcpy(dificultad, (char*) recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			limitePerMin = atoi(recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			limitePerMax = atoi(recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			edadMin = atoi(recvBuff);
-
-			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", num_linea, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
-			fflush(stdout);
-
-			num_linea++;
-
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-
-			if(strcmp(recvBuff, "FIN") == 0)
-			{
-				break;
-			}
-
-		} while(1);
-
-		printf("\n");
-		actividades();
 	} else if(numero == 3)
 	{
-		char dificultad[20];
-	    printf("Introduzca la dificultad: ");
-	    fflush(stdout);
-	    scanf(" %s", dificultad);
-		strcpy(sendBuff, "VisualizarActividadesPorDificultad");
-		send(s, sendBuff, sizeof(sendBuff), 0);
-		strcpy(sendBuff, dificultad);
-		send(s, sendBuff, sizeof(sendBuff), 0);
 
-		int num_linea = 1;
-
-		recv(s, recvBuff, sizeof(recvBuff), 0);
-
-		do {
-			char nombre[30], dificultad[10];
-			int limitePerMin, limitePerMax, edadMin;
-
-			strcpy(nombre, (char*) recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			strcpy(dificultad, (char*) recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			limitePerMin = atoi(recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			limitePerMax = atoi(recvBuff);
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-			edadMin = atoi(recvBuff);
-
-			printf("Actividad %d -> Nombre: %s - dificultad: %s - MIN: %d - MAX: %d - EdadMin: %d\n", num_linea, nombre, dificultad, limitePerMin, limitePerMax, edadMin);
-			fflush(stdout);
-
-			num_linea++;
-
-			recv(s, recvBuff, sizeof(recvBuff), 0);
-
-			if(strcmp(recvBuff, "FIN") == 0)
-			{
-				break;
-			}
-
-		} while(1);
-
-		printf("\n");
-		actividades();
 	} else if(numero == 0)
 	{
 		principal();
