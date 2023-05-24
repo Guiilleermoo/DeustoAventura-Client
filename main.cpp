@@ -125,7 +125,7 @@ void mostrarActividades()
 		recv(s, recvBuff, sizeof(recvBuff), 0);
 		edadMin = atoi(recvBuff);
 
-		Actividad a(nombre,dificultad,limitePerMin,limitePerMax,edadMin);
+		Actividad a(codigo, nombre,dificultad,limitePerMin,limitePerMax,edadMin);
 		a.imprimir();
 
 
@@ -203,7 +203,7 @@ void actividades()
 			limitePerMax = atoi(recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			edadMin = atoi(recvBuff);
-			Actividad a(nombre,dificultad,limitePerMin,limitePerMax,edadMin);
+			Actividad a(codigo, nombre,dificultad,limitePerMin,limitePerMax,edadMin);
 			a.imprimir();
 			fflush(stdout);
 
@@ -253,7 +253,7 @@ void actividades()
 			limitePerMax = atoi(recvBuff);
 			recv(s, recvBuff, sizeof(recvBuff), 0);
 			edadMin = atoi(recvBuff);
-			Actividad a(nombre,dificultad,limitePerMin,limitePerMax,edadMin);
+			Actividad a(codigo, nombre,dificultad,limitePerMin,limitePerMax,edadMin);
 			a.imprimir();
 
 			fflush(stdout);
@@ -282,7 +282,7 @@ void reservas()
 	cout<<"1. Visualizar mis reserva"<<endl;
 	cout<<"2. Hacer reservas"<<endl;
 	cout<<"3. Cancelar reservas"<<endl;
-	cout<<"0. Volver";
+	cout<<"0. Volver" <<endl;
 	cout<<"Elija su opcion: ";
 
 	fflush(stdout);

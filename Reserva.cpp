@@ -39,5 +39,5 @@ Reserva::Reserva(const Reserva &r){
 		strcpy(this->fecha,r.fecha);
 }
 void Reserva:: imprimir(){
-	cout<<"Actividad: "<<this->codActividad<< "Fecha: "<<this->fecha<<"Cliente: " <<this->codCliente<< "Cantidad de personas: "<<this->cantPersonas;
+	cout<<"Actividad: "<<this->codActividad<< " Fecha: "<<this->fecha<<" Cliente: " <<this->codCliente<< " Cantidad de personas: "<<this->cantPersonas << endl;
 }

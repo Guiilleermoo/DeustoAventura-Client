@@ -4,6 +4,7 @@
 class Actividad
 {
 	private:
+		int codigo;
 		char* nombre;
 		char* dificultad;
 		int limitePerMin;
@@ -12,7 +13,7 @@ class Actividad
 
 	public:
 		Actividad();
-		Actividad(char* nombre, char* dificultad, int limitePerMin, int limitePerMax, int edadMin);
+		Actividad(int codigo, char* nombre, char* dificultad, int limitePerMin, int limitePerMax, int edadMin);
 		Actividad(const Actividad &a);
 		~Actividad();
 
