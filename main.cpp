@@ -7,6 +7,7 @@
 #define SERVER_PORT 6000
 #include "Reserva.h"
 #include "Actividad.h"
+#include "Ciudad.h"
 char sendBuff[512], recvBuff[512];
 SOCKET s;
 #include <iostream>
@@ -16,49 +17,90 @@ void inicioSesion();
 void registrarse();
 void menu();
 void reservas();
-void mostrarReservas(){
+
+void mostrarReservas()
+{
 	strcpy(sendBuff, "VisualizarReservas");
-			send(s, sendBuff, sizeof(sendBuff), 0);
+	send(s, sendBuff, sizeof(sendBuff), 0);
 
-			int num_linea = 1;
+	int num_linea = 1;
 
-			recv(s, recvBuff, sizeof(recvBuff), 0);
+	recv(s, recvBuff, sizeof(recvBuff), 0);
 
-				while(1) {
-				char fecha[30];
-				int cantP, codA, codC;
+	while(1)
+	{
+		char fecha[30];
+		int cantP, codA, codC;
 
-				strcpy(fecha, (char*) recvBuff);
-				if(strcmp(recvBuff, "TAM0") == 0){
-					cout<<"No hay reservas"<<endl;
+		strcpy(fecha, (char*) recvBuff);
+		if(strcmp(recvBuff, "TAM0") == 0)
+		{
+			cout<<"No hay reservas"<<endl;
 
-						reservas();
-						break;
-				}
-				recv(s, recvBuff, sizeof(recvBuff), 0);
+			reservas();
+			break;
+		}
+		recv(s, recvBuff, sizeof(recvBuff), 0);
 
-				cantP = atoi(recvBuff);
-				recv(s, recvBuff, sizeof(recvBuff), 0);
-				codA = atoi(recvBuff);
-				recv(s, recvBuff, sizeof(recvBuff), 0);
-				codC = atoi(recvBuff);
-				Reserva r(codC, codA, fecha, cantP);
-				r.imprimir();
+		cantP = atoi(recvBuff);
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		codA = atoi(recvBuff);
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		codC = atoi(recvBuff);
+		Reserva r(codC, codA, fecha, cantP);
+		r.imprimir();
 
-				fflush(stdout);
+		fflush(stdout);
 
-				num_linea++;
+		num_linea++;
 
-				recv(s, recvBuff, sizeof(recvBuff), 0);
+		recv(s, recvBuff, sizeof(recvBuff), 0);
 
-				 if(strcmp(recvBuff, "FIN") == 0)
-				{
-					break;
-
-				}
-
-			}
+		if(strcmp(recvBuff, "FIN") == 0)
+		{
+			break;
+		}
+	}
 }
+
+void mostrarCiudades()
+{
+	strcpy(sendBuff, "VisualizarCiudades");
+	send(s, sendBuff, sizeof(sendBuff), 0);
+
+
+	recv(s, recvBuff, sizeof(recvBuff), 0);
+
+	do {
+		char nombre[30];
+		int codigo;
+
+		codigo = atoi(recvBuff);
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		strcpy(nombre, recvBuff);
+
+		Ciudad c(codigo, nombre);
+		c.imprimir();
+
+
+		fflush(stdout);
+
+		recv(s, recvBuff, sizeof(recvBuff), 0);
+		if(strcmp(recvBuff, "TAM0") == 0){
+			cout<<"No hay reservas.";
+
+				break;
+				}
+		if(strcmp(recvBuff, "FIN") == 0)
+		{
+			break;
+		}
+
+	} while(1);
+
+	cout<<endl;
+}
+
 void mostrarActividades()
 {
 	strcpy(sendBuff, "VisualizarActividades");
@@ -451,9 +493,9 @@ void registrarse()
 
 
 	//Mostrar las ciudades y que elija el usuario
+	mostrarCiudades();
 
-
-	cout<<"Introduce el codigo de tu ciudad: "<<endl;
+	cout << "Introduce el codigo de tu ciudad: " << endl;
 
 	fflush(stdout);
 	cin>>cod_ciu;
