@@ -111,7 +111,7 @@ void actividades()
 	cout<<"1. Visualizar todas"<<endl;
 	cout<<"2. Buscar por Ciudad"<<endl;
 	cout<<"3. Buscar por Nivel de dificultad"<<endl;
-	cout<<"0.volver"<<endl;
+	cout<<"0. Volver"<<endl;
 	cout<<"Elija su opcion:  ";
 
 	fflush(stdout);
@@ -357,7 +357,7 @@ void principal()
 	cout<<endl<<"MENU CLIENTE"<<endl;
 	cout<<"1. Ver Actividades"<<endl;
 	cout<<"2. Gestionar Reservas"<<endl;
-	cout<<"0.Volver"<<endl;
+	cout<<"0. Volver"<<endl;
 	cout<<"Elija su opcion: ";
 
 
@@ -422,8 +422,9 @@ void registrarse()
 	char dni[10], nombre[20],apellido[20],correo[20],contra[20];
 	int tlf, cod_ciu;
 
+	cout << endl;
 	cout<<"REGISTRO CLIENTE"<<endl;
-	cout<<"Introduce el DNI"<<endl;
+	cout<<"Introduce el DNI: "<<endl;
 
 	fflush(stdout);
 	cin>>dni;
@@ -451,7 +452,7 @@ void registrarse()
 
 	//Mostrar las ciudades y que elija el usuario
 
-	cout<<"Introduce la ciudad: "<<endl;
+	cout<<"Introduce el codigo de tu ciudad: "<<endl;
 
 	fflush(stdout);
 	cin>>cod_ciu;
@@ -495,6 +496,7 @@ void menu()
 	cout<<"Elija su opcion:  ";
 
 	fflush(stdout);
+
 	int numero;
 	cin>>numero;
 	fflush(stdout);
