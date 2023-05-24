@@ -452,6 +452,7 @@ void registrarse()
 
 	//Mostrar las ciudades y que elija el usuario
 
+
 	cout<<"Introduce el codigo de tu ciudad: "<<endl;
 
 	fflush(stdout);
